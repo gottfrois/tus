@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TUS Demo!</title>
+    <link href="https://transloadit.edgly.net/releases/uppy/v0.24.3/dist/uppy.min.css" rel="stylesheet">
+    <link href="<%= static_path(@conn, "/css/app.css") %>" rel="stylesheet">
+    <script src="https://transloadit.edgly.net/releases/uppy/v0.24.3/dist/uppy.min.js"></script>
+  </head>
+  <body>
+    <main role="main">
+      <%= render @view_module, @view_template, assigns %>
+    </main>
+    <script src="<%= static_path(@conn, "/js/phoenix.js") %>"></script>
+  </body>
+</html>
