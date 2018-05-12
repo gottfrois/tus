@@ -21,7 +21,7 @@ defmodule Tus.HeadTest do
       test_conn(
         :head,
         %Plug.Conn{
-          req_headers: [{"Tus-Resumable", Tus.latest_version()}]
+          req_headers: [{"tus-resumable", Tus.latest_version()}]
         },
         "/" <> uid
       )
@@ -40,7 +40,7 @@ defmodule Tus.HeadTest do
       test_conn(
         :head,
         %Plug.Conn{
-          req_headers: [{"Tus-Resumable", Tus.latest_version()}]
+          req_headers: [{"tus-resumable", Tus.latest_version()}]
         },
         "/bad-file-id"
       )

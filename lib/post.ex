@@ -30,7 +30,7 @@ defmodule Tus.Post do
   defp build_file(conn) do
     metadata_src =
       conn
-      |> get_req_header("Upload-Metadata")
+      |> get_req_header("upload-metadata")
       |> List.first()
 
     metadata =
@@ -64,7 +64,7 @@ defmodule Tus.Post do
 
   defp get_size(conn) do
     conn
-    |> get_req_header("Upload-Length")
+    |> get_req_header("upload-length")
     |> List.first()
     |> Kernel.||("0")
     |> String.to_integer()
@@ -73,7 +73,7 @@ defmodule Tus.Post do
   defp file_size_ok?(conn, %{size: size}, hard_limit) do
     soft_limit =
       conn
-      |> get_req_header("Tus-Max-Size")
+      |> get_req_header("tus-max-size")
       |> List.first()
       |> Kernel.||("#{hard_limit}")
       |> String.to_integer()

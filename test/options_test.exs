@@ -26,7 +26,7 @@ defmodule Tus.OptionsTest do
   test "unsupported version" do
     conn =
       test_conn(:post, %Plug.Conn{
-        req_headers: [{"Tus-Resumable", "9999"}]
+        req_headers: [{"tus-resumable", "9999"}]
       })
 
     response = TestController.post(conn)
@@ -46,7 +46,7 @@ defmodule Tus.OptionsTest do
       %Plug.Conn{
         method: original,
         req_headers: [
-          {"X-HTTP-Method-Override", target}
+          {"x-http-method-override", target}
         ]
       }
       |> TestController.override_method()
@@ -62,7 +62,7 @@ defmodule Tus.OptionsTest do
       %Plug.Conn{
         method: original,
         req_headers: [
-          {"X-HTTP-Method-Override", target}
+          {"x-http-method-override", target}
         ]
       }
       |> TestController.override_method()
@@ -78,7 +78,7 @@ defmodule Tus.OptionsTest do
       %Plug.Conn{
         method: original,
         req_headers: [
-          {"X-HTTP-Method-Override", target}
+          {"x-http-method-override", target}
         ]
       }
       |> TestController.override_method()

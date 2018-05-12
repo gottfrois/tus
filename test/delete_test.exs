@@ -15,9 +15,9 @@ defmodule Tus.DeleteTest do
     conn =
       test_conn(:patch, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "0"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "0"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 
@@ -40,9 +40,9 @@ defmodule Tus.DeleteTest do
     conn =
       test_conn(:delete, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "0"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "0"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 
@@ -71,9 +71,9 @@ defmodule Tus.DeleteTest do
     conn =
       test_conn(:delete, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "0"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "0"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 

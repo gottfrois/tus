@@ -63,7 +63,7 @@ defmodule Tus.Patch do
 
   defp get_offset(conn) do
     conn
-    |> get_req_header("Upload-Offset")
+    |> get_req_header("upload-offset")
     |> List.first()
     |> Kernel.||("0")
     |> String.to_integer()

@@ -56,7 +56,7 @@ defmodule Tus.Controller do
       end
 
       defp get_version(conn) do
-        Plug.Conn.get_req_header(conn, "Tus-Resumable") |> List.first()
+        Plug.Conn.get_req_header(conn, "tus-resumable") |> List.first()
       end
 
       def override_method(conn) do
@@ -64,7 +64,7 @@ defmodule Tus.Controller do
       end
 
       defp override_original_method("POST", conn) do
-        new_method = Plug.Conn.get_req_header(conn, "X-HTTP-Method-Override") |> List.first()
+        new_method = Plug.Conn.get_req_header(conn, "x-http-method-override") |> List.first()
 
         if new_method in @allowed_methods do
           %{conn | method: new_method}

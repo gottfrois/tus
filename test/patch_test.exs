@@ -15,9 +15,9 @@ defmodule Tus.PatchTest do
     conn =
       test_conn(:patch, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "0"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "0"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 
@@ -42,9 +42,9 @@ defmodule Tus.PatchTest do
     conn =
       test_conn(:patch, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "#{offset + 100}"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "#{offset + 100}"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 
@@ -68,9 +68,9 @@ defmodule Tus.PatchTest do
     conn =
       test_conn(:patch, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Offset", "0"},
-          {"Content-Type", "application/offset+octet-stream"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-offset", "0"},
+          {"content-type", "application/offset+octet-stream"}
         ]
       })
 
@@ -96,9 +96,9 @@ defmodule Tus.PatchTest do
         :patch,
         %Plug.Conn{
           req_headers: [
-            {"Tus-Resumable", Tus.latest_version()},
-            {"Upload-Offset", "0"},
-            {"Content-Type", "application/offset+octet-stream"}
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "0"},
+            {"content-type", "application/offset+octet-stream"}
           ]
         },
         "/files/#{uid}",
@@ -128,9 +128,9 @@ defmodule Tus.PatchTest do
         :patch,
         %Plug.Conn{
           req_headers: [
-            {"Tus-Resumable", Tus.latest_version()},
-            {"Upload-Offset", "0"},
-            {"Content-Type", "application/offset+octet-stream"}
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "0"},
+            {"content-type", "application/offset+octet-stream"}
           ]
         },
         "/files/#{uid}",
@@ -164,9 +164,9 @@ defmodule Tus.PatchTest do
         :patch,
         %Plug.Conn{
           req_headers: [
-            {"Tus-Resumable", Tus.latest_version()},
-            {"Upload-Offset", "#{initial_offset}"},
-            {"Content-Type", "application/offset+octet-stream"}
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "#{initial_offset}"},
+            {"content-type", "application/offset+octet-stream"}
           ]
         },
         "/files/#{uid}",
@@ -200,9 +200,9 @@ defmodule Tus.PatchTest do
         :patch,
         %Plug.Conn{
           req_headers: [
-            {"Tus-Resumable", Tus.latest_version()},
-            {"Upload-Offset", "0"},
-            {"Content-Type", "application/offset+octet-stream"}
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "0"},
+            {"content-type", "application/offset+octet-stream"}
           ]
         },
         "/files/#{uid}",

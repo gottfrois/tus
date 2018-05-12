@@ -16,8 +16,8 @@ defmodule Tus.PostTest do
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "#{config.max_size + 1}"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "#{config.max_size + 1}"}
         ]
       })
 
@@ -31,9 +31,9 @@ defmodule Tus.PostTest do
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "#{soft_limit + 1}"},
-          {"Tus-Max-Size", "#{soft_limit}"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "#{soft_limit + 1}"},
+          {"tus-max-size", "#{soft_limit}"}
         ]
       })
 
@@ -46,9 +46,9 @@ defmodule Tus.PostTest do
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "#{config.max_size + 1}"},
-          {"Tus-Max-Size", "#{config.max_size + 10}"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "#{config.max_size + 1}"},
+          {"tus-max-size", "#{config.max_size + 10}"}
         ]
       })
 
@@ -63,8 +63,8 @@ defmodule Tus.PostTest do
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "#{size}"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "#{size}"}
         ]
       })
 
@@ -114,9 +114,9 @@ defmodule Tus.PostTest do
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "10"},
-          {"Upload-Metadata", metadata_src}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "10"},
+          {"upload-metadata", metadata_src}
         ]
       })
 
@@ -145,8 +145,8 @@ defmodule Tus.PostTest do
     TestController.post(
       test_conn(:post, %Plug.Conn{
         req_headers: [
-          {"Tus-Resumable", Tus.latest_version()},
-          {"Upload-Length", "10"}
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "10"}
         ]
       })
     )
