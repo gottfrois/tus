@@ -8,8 +8,6 @@
 
 An implementation of a *[tus](https://tus.io/)* **server** in Elixir
 
-Topics: tus tus-protocol resumable-upload elixir elixir-tus
-
 > **tus** is a protocol based on HTTP for *resumable file uploads*. Resumable
 > means that an upload can be interrupted at any moment and can be resumed without
 > re-uploading the previous data again. An interruption may happen willingly, if
