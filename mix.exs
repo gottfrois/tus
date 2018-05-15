@@ -1,20 +1,24 @@
 defmodule Tus.MixProject do
   use Mix.Project
 
+  @version File.read!("VERSION") |> String.trim()
+
   def project do
     [
       app: :tus,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       description: "An Elixir sever for the resumable upload protocol “tus”",
+      deps: deps(),
       package: package(),
-      deps: deps()
+      dialyzer: [ignore_warnings: "dialyzer.ignore-warnings"]
     ]
   end
 
   def package() do
     [
+      files: ~w(lib mix.exs README.md LICENSE VERSION),
       licenses: ["BSD 3-Clause License"],
       maintainers: ["Juan-Pablo Scaletti", "juanpablo@jpscaletti.com"],
       links: %{github: "https://github.com/jpscaletti/elixir-tus"}
@@ -24,7 +28,8 @@ defmodule Tus.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: []
+      extra_applications: [:logger],
+      mod: {Tus.Application, []}
     ]
   end
 
@@ -43,7 +48,7 @@ defmodule Tus.MixProject do
       # {:hackney, "~> 1.9"},
       # {:sweet_xml, "~> 0.6"},
 
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 end

@@ -12,30 +12,6 @@ defmodule Tus do
   def str_supported_versions, do: Enum.join(@supported_versions, ",")
   def extension, do: @extension
 
-  def cache_get(%{cache: cache, cache_name: cache_name, uid: uid}) do
-    cache.get(cache_name, uid)
-  end
-
-  def cache_put(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid} = file) do
-    cache.put(cache_name, uid, file)
-  end
-
-  def cache_delete(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid}) do
-    cache.delete(cache_name, uid)
-  end
-
-  def storage_create(%{storage: storage} = config, %Tus.File{} = file) do
-    storage.create(file, config)
-  end
-
-  def storage_append(%{storage: storage} = config, %Tus.File{} = file, data) do
-    storage.append(file, data, config)
-  end
-
-  def storage_delete(%{storage: storage} = config, %Tus.File{} = file) do
-    storage.delete(file, config)
-  end
-
   def options(conn, %{max_size: max_size}) do
     conn
     |> put_resp_header("tus-resumable", latest_version())
@@ -82,4 +58,29 @@ defmodule Tus do
     |> put_resp_header("tus-version", str_supported_versions())
     |> resp(:precondition_failed, "API version not supported")
   end
+
+  def cache_get(%{cache: cache, cache_name: cache_name, uid: uid}) do
+    cache.get(cache_name, uid)
+  end
+
+  def cache_put(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid} = file) do
+    cache.put(cache_name, uid, file)
+  end
+
+  def cache_delete(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid}) do
+    cache.delete(cache_name, uid)
+  end
+
+  def storage_create(%{storage: storage} = config, %Tus.File{} = file) do
+    storage.create(file, config)
+  end
+
+  def storage_append(%{storage: storage} = config, %Tus.File{} = file, data) do
+    storage.append(file, data, config)
+  end
+
+  def storage_delete(%{storage: storage} = config, %Tus.File{} = file) do
+    storage.delete(file, config)
+  end
+
 end
