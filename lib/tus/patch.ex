@@ -4,13 +4,12 @@ defmodule Tus.Patch do
   import Plug.Conn
 
   def patch(conn, %{version: version} = config) when version == "1.0.0" do
-    with {:ok, file} <- get_file(config),
+    with {:ok, %Tus.File{} = file} <- get_file(config),
          :ok <- offsets_match?(conn, file),
          {:ok, data, conn} <- get_body(conn),
          data_size <- byte_size(data),
          :ok <- valid_size?(file, data_size),
          :ok <- append_data(config, file, data) do
-
       file = %Tus.File{file | offset: file.offset + data_size}
       Tus.cache_put(config, file)
 
@@ -44,12 +43,9 @@ defmodule Tus.Patch do
   end
 
   defp get_file(config) do
-    file = Tus.cache_get(config)
-
-    if file do
-      {:ok, file}
-    else
-      :file_not_found
+    case Tus.cache_get(config) do
+      %Tus.File{} = file -> {:ok, file}
+      _ -> :file_not_found
     end
   end
 

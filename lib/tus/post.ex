@@ -10,7 +10,6 @@ defmodule Tus.Post do
          {:ok, file} <- create_file(config, file),
          :ok <- cache_file(config, file),
          :ok <- config.on_begin_upload.(file) do
-
       conn
       |> put_resp_header("tus-resumable", config.version)
       |> put_resp_header("location", file.uid)

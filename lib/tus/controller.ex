@@ -47,7 +47,7 @@ defmodule Tus.Controller do
         app_env =
           Application.get_env(:tus, __MODULE__, [])
           |> Enum.into(%{})
-          |> Map.put(:cache_name,  Module.concat(__MODULE__, TusCache))
+          |> Map.put(:cache_name, Module.concat(__MODULE__, TusCache))
           |> Map.put(:version, get_version(conn))
           |> Map.put(:on_begin_upload, &on_begin_upload/1)
           |> Map.put(:on_complete_upload, &on_complete_upload/1)

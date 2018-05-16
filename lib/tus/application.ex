@@ -8,7 +8,10 @@ defmodule Tus.Application do
   import Supervisor.Spec, only: [worker: 3]
 
   def start(_type, _args) do
-    start_supervisor(get_children())
+    # See https://hexdocs.pm/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [strategy: :one_for_one, name: Tus.Supervisor]
+    Supervisor.start_link(get_children(), opts)
   end
 
   defp get_children do
@@ -25,15 +28,5 @@ defmodule Tus.Application do
       |> Map.put(:cache_name, Module.concat(controller, TusCache))
 
     worker(config.cache, [config], [])
-  end
-
-  defp start_supervisor([]) do
-  end
-
-  defp start_supervisor(children) do
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Tus.Supervisor]
-    Supervisor.start_link(children, opts)
   end
 end
