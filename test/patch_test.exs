@@ -177,6 +177,9 @@ defmodule Tus.PatchTest do
     assert response.status == code(:no_content)
     assert response |> get_resp_header("tus-resumable") == [Tus.latest_version()]
     assert response |> get_resp_header("upload-offset") == ["#{initial_offset + byte_size(body)}"]
+
+    # Still exists
+    assert config.cache.get(config.cache_name, uid)
   end
 
   test "on_complete_upload called", context do
@@ -193,6 +196,7 @@ defmodule Tus.PatchTest do
         },
         config
       )
+
     config.cache.put(config.cache_name, uid, file)
 
     conn =
@@ -216,5 +220,8 @@ defmodule Tus.PatchTest do
 
     # https://dockyard.com/blog/2016/03/24/testing-function-delegation-in-elixir-without-stubbing
     assert_receive :on_complete_upload_called
+
+    # Deleted after calling `on_complete_upload`
+    refute config.cache.get(config.cache_name, uid)
   end
 end

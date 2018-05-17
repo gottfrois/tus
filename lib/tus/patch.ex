@@ -15,6 +15,7 @@ defmodule Tus.Patch do
 
       if upload_completed?(file) do
         config.on_complete_upload.(file)
+        Tus.cache_delete(config, file)
       end
 
       conn
