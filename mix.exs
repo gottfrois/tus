@@ -21,7 +21,7 @@ defmodule Tus.MixProject do
       files: ~w(lib mix.exs README.md LICENSE VERSION),
       licenses: ["BSD 3-Clause License"],
       maintainers: ["Juan-Pablo Scaletti", "juanpablo@jpscaletti.com"],
-      links: %{github: "https://github.com/jpscaletti/elixir-tus"}
+      links: %{github: "https://github.com/jpscaletti/tus"}
     ]
   end
 
