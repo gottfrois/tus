@@ -80,8 +80,6 @@ config :tus, controllers: [DemoWeb.UploadController]
 
 # This is the config for the DemoWeb.UploadController
 config :tus, DemoWeb.UploadController,
-  base_url: "/static/files",
-
   storage: Tus.Storage.Local,
   base_path: "priv/static/files/",
 
@@ -90,11 +88,6 @@ config :tus, DemoWeb.UploadController,
   # max supported file size, in bytes (default 20 MB)
   max_size: 1024 * 1024 * 20
 ```
-
-- `base_url`:
-  Tus requires that the server returns the URL of the uploaded file.
-  This could be a static location a local route that does authentication
-  checks, a CDN, etc.
 
 - `storage`:
   module which handle storage file application

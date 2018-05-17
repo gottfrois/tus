@@ -18,16 +18,6 @@ defmodule Tus.Storage.Local do
     basepath
   end
 
-  defp url(config, path) do
-    Enum.join(
-      [
-        config.base_url |> String.trim_trailing("/"),
-        path |> String.trim_leading("/")
-      ],
-      "/"
-    )
-  end
-
   def create(file, config) do
     path = get_path()
 
@@ -39,11 +29,7 @@ defmodule Tus.Storage.Local do
 
     path = path |> Path.join(file.uid)
 
-    %Tus.File{
-      file
-      | path: path,
-        url: url(config, path)
-    }
+    %Tus.File{file | path: path}
   end
 
   def append(file, body, config) do

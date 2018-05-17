@@ -8,6 +8,5 @@ defmodule Tus.File do
             metadata: %{},
             created_at: nil,
             path: nil,
-            url: nil,
             upload_id: nil
 end
