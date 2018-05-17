@@ -38,16 +38,6 @@ defmodule Tus.MixProject do
     [
       {:plug, "~> 1.3"},
       {:uuid, "~> 1.1"},
-
-      # Dependencies for Tus.Cache.redis
-      # {:redix, ">= 0.0.0"},
-
-      # Dependencies for Tus.Storage.S3
-      # {:ex_aws, "~> 2.0"},
-      # {:ex_aws_s3, "~> 2.0"},
-      # {:hackney, "~> 1.9"},
-      # {:sweet_xml, "~> 0.6"},
-
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end

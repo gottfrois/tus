@@ -37,9 +37,11 @@ defmodule Tus.Storage.Local do
     |> File.open!([:write])
     |> File.close()
 
+    path = path |> Path.join(file.uid)
+
     %Tus.File{
       file
-      | path: path |> Path.join(file.uid),
+      | path: path,
         url: url(config, path)
     }
   end
