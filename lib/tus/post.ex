@@ -7,8 +7,8 @@ defmodule Tus.Post do
   def post(conn, %{version: version, max_size: max_size} = config) when version == "1.0.0" do
     with {:ok, file} <- build_file(conn),
          :ok <- file_size_ok?(conn, file, max_size),
-         {:ok, file} <- create_file(config, file),
-         :ok <- cache_file(config, file),
+         {:ok, file} <- create_file(file, config),
+         :ok <- cache_file(file, config),
          :ok <- config.on_begin_upload.(file) do
       conn
       |> put_resp_header("tus-resumable", config.version)
@@ -84,13 +84,13 @@ defmodule Tus.Post do
     end
   end
 
-  defp create_file(config, file) do
-    file = Tus.storage_create(config, file)
+  defp create_file(file, config) do
+    file = Tus.storage_create(file, config)
     {:ok, file}
   end
 
-  defp cache_file(config, file) do
-    Tus.cache_put(config, file)
+  defp cache_file(file, config) do
+    Tus.cache_put(file, config)
     :ok
   end
 end

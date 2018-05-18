@@ -32,7 +32,7 @@ defmodule Tus.Storage.Local do
     %Tus.File{file | path: path}
   end
 
-  def append(file, body, config) do
+  def append(file, config, body) do
     base_path(config)
     |> Path.join(file.path)
     |> File.open([:append, :binary, :delayed_write, :raw])
@@ -40,11 +40,15 @@ defmodule Tus.Storage.Local do
       {:ok, filesto} ->
         IO.binwrite(filesto, body)
         File.close(filesto)
-        :ok
+        {:ok, file}
 
       {:error, error} ->
         {:error, error}
     end
+  end
+
+  def complete_upload(file, _config) do
+    {:ok, file}
   end
 
   def delete(file, config) do

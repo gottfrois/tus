@@ -63,24 +63,27 @@ defmodule Tus do
     cache.get(cache_name, uid)
   end
 
-  def cache_put(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid} = file) do
+  def cache_put(%Tus.File{uid: uid} = file, %{cache: cache, cache_name: cache_name}) do
     cache.put(cache_name, uid, file)
   end
 
-  def cache_delete(%{cache: cache, cache_name: cache_name}, %Tus.File{uid: uid}) do
+  def cache_delete(%Tus.File{uid: uid}, %{cache: cache, cache_name: cache_name}) do
     cache.delete(cache_name, uid)
   end
 
-  def storage_create(%{storage: storage} = config, %Tus.File{} = file) do
+  def storage_create(%Tus.File{} = file, %{storage: storage} = config) do
     storage.create(file, config)
   end
 
-  def storage_append(%{storage: storage} = config, %Tus.File{} = file, data) do
-    storage.append(file, data, config)
+  def storage_append(%Tus.File{} = file, %{storage: storage} = config, data) do
+    storage.append(file, config, data)
   end
 
-  def storage_delete(%{storage: storage} = config, %Tus.File{} = file) do
+  def storage_complete_upload(%Tus.File{} = file, %{storage: storage} = config) do
+    storage.complete_upload(file, config)
+  end
+
+  def storage_delete(%Tus.File{} = file, %{storage: storage} = config) do
     storage.delete(file, config)
   end
-
 end
