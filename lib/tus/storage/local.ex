@@ -1,9 +1,11 @@
 defmodule Tus.Storage.Local do
   @default_base_path "priv/static/files/"
 
-  def get_path() do
-    time = DateTime.utc_now()
-    Path.join(["#{time.year}", "#{time.month}", "#{time.day}"])
+  def get_path(uid) do
+    uid
+    |> String.split("")
+    |> Enum.slice(1, 3)
+    |> Path.join()
   end
 
   defp base_path(config) do
@@ -19,7 +21,7 @@ defmodule Tus.Storage.Local do
   end
 
   def create(file, config) do
-    path = get_path()
+    path = get_path(file.uid)
 
     path
     |> make_basepath(config)

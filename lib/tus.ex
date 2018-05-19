@@ -164,30 +164,37 @@ defmodule Tus do
     |> resp(:precondition_failed, "API version not supported")
   end
 
+  @doc false
   def cache_get(%{cache: cache, cache_name: cache_name, uid: uid}) do
     cache.get(cache_name, uid)
   end
 
+  @doc false
   def cache_put(%Tus.File{uid: uid} = file, %{cache: cache, cache_name: cache_name}) do
     cache.put(cache_name, uid, file)
   end
 
+  @doc false
   def cache_delete(%Tus.File{uid: uid}, %{cache: cache, cache_name: cache_name}) do
     cache.delete(cache_name, uid)
   end
 
+  @doc false
   def storage_create(%Tus.File{} = file, %{storage: storage} = config) do
     storage.create(file, config)
   end
 
+  @doc false
   def storage_append(%Tus.File{} = file, %{storage: storage} = config, data) do
     storage.append(file, config, data)
   end
 
+  @doc false
   def storage_complete_upload(%Tus.File{} = file, %{storage: storage} = config) do
     storage.complete_upload(file, config)
   end
 
+  @doc false
   def storage_delete(%Tus.File{} = file, %{storage: storage} = config) do
     storage.delete(file, config)
   end
