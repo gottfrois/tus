@@ -11,8 +11,16 @@ defmodule Tus.MixProject do
       start_permanent: Mix.env() == :prod,
       description: "An Elixir sever for the resumable upload protocol “tus”",
       deps: deps(),
+      docs: docs(),
       package: package(),
       dialyzer: [ignore_warnings: "dialyzer.ignore-warnings"]
+    ]
+  end
+
+  defp docs do
+    [
+      source_url: "https://github.com/jpscaletti/tus",
+      extras: []
     ]
   end
 
