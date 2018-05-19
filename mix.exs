@@ -19,6 +19,7 @@ defmodule Tus.MixProject do
 
   defp docs do
     [
+      main: "Tus",
       source_url: "https://github.com/jpscaletti/tus",
       extras: []
     ]
