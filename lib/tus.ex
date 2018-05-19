@@ -70,7 +70,7 @@ defmodule Tus do
   **3. Add config for each controller (see next section)**
 
 
-  ## Configuration (the global way)
+  ## Configuration (the global way) 
 
   ```elixir
   # List here all of your upload controllers
