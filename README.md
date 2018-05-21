@@ -1,4 +1,6 @@
-# Tus
+# Elixir tus
+
+[![travis.ci build status](https://img.shields.io/travis/jpscaletti/tus.svg?style=flat)](https://travis-ci.org/jpscaletti/tus)
 
 An implementation of a *[tus](https://tus.io/)* **server** in Elixir
 
