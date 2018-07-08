@@ -1,13 +1,17 @@
 defmodule Tus.Controller do
   defmacro __using__(_) do
     quote do
-      @allowed_methods ~w(OPTIONS HEAD PATCH DELETE)
+      @allowed_methods ~w(OPTIONS HEAD GET PATCH DELETE)
 
       def options(conn, config \\ %{}) do
         call_method(conn, config)
       end
 
       def head(conn, %{"uid" => uid} = config) do
+        call_method(conn, config |> Map.put(:uid, uid))
+      end
+
+      def get(conn, %{"uid" => uid} = config) do
         call_method(conn, config |> Map.put(:uid, uid))
       end
 
