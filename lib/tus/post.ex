@@ -12,7 +12,7 @@ defmodule Tus.Post do
          :ok <- config.on_begin_upload.(file) do
       conn
       |> put_resp_header("tus-resumable", config.version)
-      |> put_resp_header("location", "#{config.url}/#{file.uid}")
+      |> put_resp_header("location", "#{config.endpoint}/#{file.uid}")
       |> resp(:created, "")
     else
       :too_large ->
