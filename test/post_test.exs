@@ -156,4 +156,21 @@ defmodule Tus.PostTest do
 
     File.rm_rf(config.base_path |> Path.expand())
   end
+
+  test "init_file called with conn", context do
+    config = context[:config]
+    TestController.post(
+      test_conn(:post, %Plug.Conn{
+        req_headers: [
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "10"}
+        ]
+      })
+    )
+
+    # https://dockyard.com/blog/2016/03/24/testing-function-delegation-in-elixir-without-stubbing
+    assert_receive {:init_file, %Plug.Conn{}}
+
+    File.rm_rf(config.base_path |> Path.expand())
+  end
 end

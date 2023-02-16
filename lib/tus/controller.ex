@@ -23,6 +23,10 @@ defmodule Tus.Controller do
         call_method(conn, config |> Map.put(:uid, uid))
       end
 
+      def init_file(file, _conn) do
+        file
+      end
+
       def on_begin_upload(_file) do
         :ok
       end
@@ -30,7 +34,7 @@ defmodule Tus.Controller do
       def on_complete_upload(_file) do
       end
 
-      defoverridable on_begin_upload: 1, on_complete_upload: 1
+      defoverridable on_begin_upload: 1, on_complete_upload: 1, init_file: 2
 
       defp call_method(conn, config \\ %{}) do
         config = update_config(conn, config)
@@ -51,6 +55,7 @@ defmodule Tus.Controller do
           |> Map.put(:version, get_version(conn))
           |> Map.put(:on_begin_upload, &on_begin_upload/1)
           |> Map.put(:on_complete_upload, &on_complete_upload/1)
+          |> Map.put(:init_file, &init_file/2)
 
         Map.merge(app_env, config)
       end

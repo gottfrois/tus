@@ -6,6 +6,7 @@ defmodule Tus.Post do
 
   def post(conn, %{version: version, max_size: max_size} = config) when version == "1.0.0" do
     with {:ok, file} <- build_file(conn),
+         file <- config.init_file.(file, conn),
          :ok <- file_size_ok?(conn, file, max_size),
          {:ok, file} <- create_file(file, config),
          :ok <- cache_file(file, config),
