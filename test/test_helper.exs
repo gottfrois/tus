@@ -1,6 +1,11 @@
 defmodule Tus.TestController do
   use Tus.Controller
 
+  def init_file(file, conn) do
+    send self(), {:init_file, conn}
+    file
+  end
+
   def on_begin_upload(_file) do
     send self(), :on_begin_upload_called
     :ok
