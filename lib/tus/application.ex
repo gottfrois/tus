@@ -11,21 +11,30 @@ defmodule Tus.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Tus.Supervisor]
-    Supervisor.start_link(get_children(), opts)
+    case get_children() do
+      {:error, _} = e -> e
+      children when is_list(children) -> Supervisor.start_link(children, opts)
+    end
   end
 
   defp get_children do
     Application.get_env(:tus, :controllers, [])
-    |> Enum.map(&get_worker/1)
+    |> Enum.reduce_while([], fn controller, lst ->
+      case Application.get_env(:tus, controller) do
+        worker_opts when is_list(worker_opts) ->
+          {:cont, [start_worker(controller, worker_opts) | lst]}
+        nil ->
+            {:halt, {:error, "Tus configuration for #{controller} not found"}}
+      end
+    end)
   end
 
-  defp get_worker(controller) do
+  defp start_worker(controller, opts) do
     # Starts a worker by calling: Tus.Worker.start_link(arg)
     # {Tus.Worker, arg},
-    config =
-      Application.get_env(:tus, controller)
-      |> Enum.into(%{})
-      |> Map.put(:cache_name, Module.concat(controller, TusCache))
+    config = opts
+    |> Enum.into(%{})
+    |> Map.put(:cache_name, Module.concat(controller, TusCache))
 
     worker(config.cache, [config], [])
   end
