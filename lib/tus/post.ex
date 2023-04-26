@@ -11,9 +11,16 @@ defmodule Tus.Post do
          {:ok, file} <- create_file(file, config),
          :ok <- cache_file(file, config),
          :ok <- config.on_begin_upload.(file) do
+      location =
+        if file.prefix != "" do
+          file.prefix <> file.uid
+        else
+          file.uid
+        end
+
       conn
       |> put_resp_header("tus-resumable", config.version)
-      |> put_resp_header("location", file.uid)
+      |> put_resp_header("location", location)
       |> resp(:created, "")
     else
       :too_large ->
