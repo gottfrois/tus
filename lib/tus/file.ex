@@ -4,6 +4,7 @@ defmodule Tus.File do
   defstruct uid: nil,
             size: nil,
             offset: 0,
+            prefix: "",
             metadata_src: nil,
             metadata: %{},
             created_at: nil,
