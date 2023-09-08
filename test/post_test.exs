@@ -11,8 +11,10 @@ defmodule Tus.PostTest do
     %{config: get_config()}
   end
 
-  test "`HTTP 413 Request Entity Too Large` if upload larger than the hard config limit", context do
+  test "`HTTP 413 Request Entity Too Large` if upload larger than the hard config limit",
+       context do
     config = context[:config]
+
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
@@ -43,6 +45,7 @@ defmodule Tus.PostTest do
 
   test "hard config limit override the `Tus-Max-Size` soft limit", context do
     config = context[:config]
+
     conn =
       test_conn(:post, %Plug.Conn{
         req_headers: [
@@ -83,6 +86,49 @@ defmodule Tus.PostTest do
     assert file.size == size
 
     File.rm_rf(config.base_path |> Path.expand())
+  end
+
+  test "create a new upload with expiration period enabled", context do
+    config = context[:config]
+    app_env = Application.get_env(:tus, Tus.TestController, [])
+
+    new_app_env =
+      app_env
+      |> Keyword.update(:expiration_period, 300, fn _ -> 300 end)
+
+    Application.put_env(:tus, Tus.TestController, new_app_env)
+    size = 10
+
+    conn =
+      test_conn(:post, %Plug.Conn{
+        req_headers: [
+          {"tus-resumable", Tus.latest_version()},
+          {"upload-length", "#{size}"}
+        ]
+      })
+
+    response = TestController.post(conn)
+
+    assert response.status == code(:created)
+    assert response |> get_resp_header("tus-resumable") == [Tus.latest_version()]
+    assert response |> get_resp_header("upload-offset") == []
+    assert response |> get_resp_header("upload-length") == []
+
+    [expire_at] = response |> get_resp_header("upload-expires")
+    assert is_binary(expire_at)
+
+    location = response |> get_resp_header("location") |> List.first()
+    assert location
+
+    file = config.cache.get(config.cache_name, location |> Path.basename())
+    assert file
+    assert file.size == size
+
+    File.rm_rf(config.base_path |> Path.expand())
+
+    on_exit(fn ->
+      Application.put_env(:tus, Tus.TestController, app_env)
+    end)
   end
 
   test "parse metadata" do
@@ -142,6 +188,7 @@ defmodule Tus.PostTest do
 
   test "on_begin_upload called", context do
     config = context[:config]
+
     TestController.post(
       test_conn(:post, %Plug.Conn{
         req_headers: [
@@ -159,6 +206,7 @@ defmodule Tus.PostTest do
 
   test "init_file called with conn", context do
     config = context[:config]
+
     TestController.post(
       test_conn(:post, %Plug.Conn{
         req_headers: [

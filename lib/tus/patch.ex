@@ -14,6 +14,7 @@ defmodule Tus.Patch do
       conn
       |> put_resp_header("tus-resumable", config.version)
       |> put_resp_header("upload-offset", "#{file.offset}")
+      |> Tus.add_expire_hdr(file, config)
       |> resp(:no_content, "")
     else
       :file_not_found ->

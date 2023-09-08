@@ -7,7 +7,7 @@ defmodule Tus.MixProject do
     [
       app: :tus,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       description: "An Elixir sever for the resumable upload protocol “tus”",
       deps: deps(),

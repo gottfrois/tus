@@ -25,4 +25,5 @@ This library implements the core TUS API v1.0.0 protocol and the following exten
 
 - Creation Protocol (http://tus.io/protocols/resumable-upload.html#creation). Deferring the upload's length is not possible.
 - Termination Protocol (http://tus.io/protocols/resumable-upload.html#termination)
+- Expiration Protocol (https://tus.io/protocols/resumable-upload.html#expiration)
 
