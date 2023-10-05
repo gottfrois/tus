@@ -19,6 +19,7 @@ defmodule Tus do
 
   - Creation Protocol (http://tus.io/protocols/resumable-upload.html#creation). Deferring the upload's length is not possible.
   - Termination Protocol (http://tus.io/protocols/resumable-upload.html#termination)
+  - Expiration Protocol (https://tus.io/protocols/resumable-upload.html#expiration)
 
 
   ## Installation
@@ -47,7 +48,7 @@ defmodule Tus do
       ...
       :ok  # or {:error, reason} to reject the uplaod
     end
-    
+
     # Completed upload optional callback
     def on_complete_upload(file) do
       ...
@@ -70,7 +71,7 @@ defmodule Tus do
   **3. Add config for each controller (see next section)**
 
 
-  ## Configuration (the global way) 
+  ## Configuration (the global way)
 
   ```elixir
   # List here all of your upload controllers
@@ -80,6 +81,9 @@ defmodule Tus do
   config :tus, DemoWeb.UploadController,
     storage: Tus.Storage.Local,
     base_path: "priv/static/files/",
+
+    # expire ttl for a cache entry, in seconds. If missing Expiration Protocol is not enabled
+    expiration_period: 300,
 
     cache: Tus.Cache.Memory,
 
@@ -92,13 +96,16 @@ defmodule Tus do
     This library includes only `Tus.Storage.Local` but you can install the
     [`tus_storage_s3`](https://hex.pm/packages/tus_storage_s3) hex package to use **Amazon S3**.
 
+  - `expiration_period`:
+    expire unfinished uploads after a specified number of seconds so they can removed from cache
+
   - `cache`:
     module for handling the temporary uploads metadata
     This library comes with `Tus.Cache.Memory` but you can install the
     [`tus_cache_redis`](https://hex.pm/packages/tus_cache_redis) hex package to use a **Redis** based one.
 
   - `max_size`:
-    hard limit on the maximum size an uploaded file can have 
+    hard limit on the maximum size an uploaded file can have
 
   ### Options for `Tus.Storage.Local`
 
@@ -197,5 +204,25 @@ defmodule Tus do
   @doc false
   def storage_delete(%Tus.File{} = file, %{storage: storage} = config) do
     storage.delete(file, config)
+  end
+
+  @doc false
+  def add_expire_hdr(conn, %Tus.File{} = file, config) do
+    case Map.get(config, :expiration_period) do
+      nil ->
+        conn
+
+      expiration_period ->
+        expire_at = file.created_at + expiration_period
+
+        {:ok, dt} =
+          expire_at
+          |> DateTime.from_unix()
+
+        expires = dt |> Calendar.strftime("%a, %d %b %Y %X GMT")
+
+        conn
+        |> put_resp_header("upload-expires", expires)
+    end
   end
 end

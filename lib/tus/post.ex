@@ -21,6 +21,7 @@ defmodule Tus.Post do
       conn
       |> put_resp_header("tus-resumable", config.version)
       |> put_resp_header("location", location)
+      |> Tus.add_expire_hdr(file, config)
       |> resp(:created, "")
     else
       :too_large ->

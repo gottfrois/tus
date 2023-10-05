@@ -224,4 +224,56 @@ defmodule Tus.PatchTest do
     # Deleted after calling `on_complete_upload`
     refute config.cache.get(config.cache_name, uid)
   end
+
+  test "with expiration protocol enabled", context do
+    config = context[:config]
+    app_env = Application.get_env(:tus, Tus.TestController, [])
+
+    new_app_env =
+      app_env
+      |> Keyword.update(:expiration_period, 300, fn _ -> 300 end)
+
+    Application.put_env(:tus, Tus.TestController, new_app_env)
+
+    uid = "youcompleteme"
+    body = "lorem ipsum sit amet 1234567890 this is a test"
+
+    file =
+      config.storage.create(
+        %Tus.File{
+          uid: uid,
+          offset: 0,
+          created_at: DateTime.to_unix(DateTime.utc_now()),
+          size: byte_size(body)
+        },
+        config
+      )
+
+    config.cache.put(config.cache_name, uid, file)
+
+    conn =
+      test_conn(
+        :patch,
+        %Plug.Conn{
+          req_headers: [
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "0"},
+            {"content-type", "application/offset+octet-stream"}
+          ]
+        },
+        "/files/#{uid}",
+        body
+      )
+
+    response = TestController.patch(conn, %{"uid" => uid})
+    assert response.status == code(:no_content)
+    assert response |> get_resp_header("tus-resumable") == [Tus.latest_version()]
+    assert response |> get_resp_header("upload-offset") == ["#{byte_size(body)}"]
+    [expire_at] = response |> get_resp_header("upload-expires")
+    assert is_binary(expire_at)
+
+    on_exit(fn ->
+      Application.put_env(:tus, Tus.TestController, app_env)
+    end)
+  end
 end
