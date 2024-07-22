@@ -2,6 +2,7 @@ defmodule Tus.MixProject do
   use Mix.Project
 
   @version File.read!("VERSION") |> String.trim()
+  @source_url "https://github.com/gottfrois/tus"
 
   def project do
     [
@@ -20,7 +21,7 @@ defmodule Tus.MixProject do
   defp docs do
     [
       main: "Tus",
-      source_url: "https://github.com/jpscaletti/tus",
+      source_url: @source_url,
       extras: []
     ]
   end
@@ -30,7 +31,7 @@ defmodule Tus.MixProject do
       files: ~w(lib mix.exs README.md LICENSE VERSION),
       licenses: ["BSD 3-Clause License"],
       maintainers: ["Juan-Pablo Scaletti", "juanpablo@jpscaletti.com"],
-      links: %{github: "https://github.com/jpscaletti/tus"}
+      links: %{github: @source_url}
     ]
   end
 
