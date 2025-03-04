@@ -9,8 +9,8 @@ defmodule Tus.Patch do
          {:ok, data, conn} <- get_body(conn),
          data_size <- byte_size(data),
          :ok <- valid_size?(file, data_size),
-         {:ok, file} <- append_data(file, config, data),
-         {:ok, file} <- maybe_upload_completed(file, data_size, config) do
+         {:ok, file, new_offset} <- append_data(file, config, data),
+         {:ok, file} <- maybe_upload_completed(file, new_offset, config) do
       conn
       |> put_resp_header("tus-resumable", config.version)
       |> put_resp_header("upload-offset", "#{file.offset}")
@@ -37,8 +37,8 @@ defmodule Tus.Patch do
     end
   end
 
-  defp maybe_upload_completed(file, data_size, config) do
-    file = %Tus.File{file | offset: file.offset + data_size}
+  defp maybe_upload_completed(file, new_offset, config) do
+    file = %Tus.File{file | offset: new_offset}
     Tus.cache_put(file, config)
 
     case upload_completed?(file) do
@@ -96,7 +96,17 @@ defmodule Tus.Patch do
   end
 
   defp append_data(file, config, data) do
-    Tus.storage_append(file, config, data)
+    case Tus.storage_append(file, config, data) do
+      {:ok, file} ->
+        new_offset = file.offset + byte_size(data)
+        {:ok, file, new_offset}
+
+      {:ok, file, new_offset} ->
+        {:ok, file, new_offset}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 
   defp upload_completed?(file) do

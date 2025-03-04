@@ -182,6 +182,72 @@ defmodule Tus.PatchTest do
     assert config.cache.get(config.cache_name, uid)
   end
 
+  test "storage can control reported offset", context do
+    config = context[:config]
+    uid = "customoffset"
+    body = "lorem ipsum sit amet 1234567890 this is a test"
+    initial_offset = 10
+    expected_offset = 25  # Different from initial_offset + byte_size(body)
+
+    # Create a mock storage module that returns a custom offset
+    defmodule MockStorage do
+      @custom_offset 25  # Define the offset as a module attribute
+      
+      def create(file, _config), do: %{file | path: "meh/#{file.uid}"}
+      def append(_file, _config, _data), do: {:ok, %Tus.File{uid: "customoffset", offset: @custom_offset, size: 100, path: "meh/customoffset"}, @custom_offset}
+      def complete_upload(file, _config), do: {:ok, file}
+      def delete(_file, _config), do: :ok
+      def file_path(uid, _config), do: "meh/#{uid}"
+      def url(uid, _config), do: "http://example.com/#{uid}"
+      
+      # Add these methods to handle any other operations that might be called
+      def base_path(_config), do: ""
+      def local_path(path, _config), do: path
+    end
+
+    # Override the storage in config
+    config = Map.put(config, :storage, MockStorage)
+
+    file = MockStorage.create(
+      %Tus.File{
+        uid: uid,
+        offset: initial_offset,
+        size: 100
+      },
+      config
+    )
+
+    config.cache.put(config.cache_name, uid, file)
+
+    conn =
+      test_conn(
+        :patch,
+        %Plug.Conn{
+          req_headers: [
+            {"tus-resumable", Tus.latest_version()},
+            {"upload-offset", "#{initial_offset}"},
+            {"content-type", "application/offset+octet-stream"}
+          ]
+        },
+        "/files/#{uid}",
+        body
+      )
+
+    # Use Tus.Patch directly to bypass controller
+    config = Map.put(config, :uid, uid)
+    config = Map.put(config, :version, Tus.latest_version())
+    response = Tus.Patch.patch(conn, config)
+    assert response.status == code(:no_content)
+    assert response |> get_resp_header("tus-resumable") == [Tus.latest_version()]
+    
+    # Verify the custom offset is used, not the calculated one
+    assert response |> get_resp_header("upload-offset") == ["#{expected_offset}"]
+    
+    # Verify the file in cache has the custom offset
+    cached_file = config.cache.get(config.cache_name, uid)
+    assert cached_file.offset == expected_offset
+  end
+
   test "on_complete_upload called", context do
     config = context[:config]
     uid = "youcompleteme"
