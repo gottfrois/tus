@@ -66,8 +66,10 @@ defmodule Tus.Post do
   end
 
   defp split_metadata(kv) do
-    [key, value] = String.split(kv, ~r/\s+/, parts: 2)
-    {key, Base.decode64!(value)}
+    case String.split(kv, ~r/\s+/, parts: 2) do
+      [key] -> {key, nil}
+      [key, value] -> {key, Base.decode64!(value)}
+    end
   end
 
   defp get_size(conn) do
