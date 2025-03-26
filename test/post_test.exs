@@ -153,6 +153,28 @@ defmodule Tus.PostTest do
     assert Tus.Post.parse_metadata(metadata_src) == expected
   end
 
+  test "parse metadata with key followed by a space and empty value" do
+    metadata_src = "filename ,username YnJhaW4="
+
+    expected = [
+      {"filename", nil},
+      {"username", "brain"}
+    ]
+
+    assert Tus.Post.parse_metadata(metadata_src) == expected
+  end
+
+  test "parse metadata with only key" do
+    metadata_src = "filename,username YnJhaW4="
+
+    expected = [
+      {"filename", nil},
+      {"username", "brain"}
+    ]
+
+    assert Tus.Post.parse_metadata(metadata_src) == expected
+  end
+
   test "create a new upload with metadata", context do
     config = context[:config]
     metadata_src = "filename d29ybGRfZG9taW5hdGlvbl9wbGFuLnBkZg==,username YnJhaW4="
